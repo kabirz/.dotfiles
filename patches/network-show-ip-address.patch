@@ -1,0 +1,30 @@
+From 451d653effff986bd1feff637748cbf9a6dff9c1 Mon Sep 17 00:00:00 2001
+From: zhp <jxwazxzhp@126.com>
+Date: Wed, 5 Jul 2023 16:17:54 +0800
+Subject: [PATCH] network show ip address
+
+Signed-off-by: zhp <jxwazxzhp@126.com>
+---
+ scripts/network.sh | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/scripts/network.sh b/scripts/network.sh
+index d2aa88b..55621c0 100755
+--- a/scripts/network.sh
++++ b/scripts/network.sh
+@@ -45,6 +45,12 @@ main()
+     fi
+   done
+ 
++  local_host="`hostname --fqdn`"
++  local_ip=`host $local_host 2>/dev/null | awk '{print $NF}'`
++  if [ "${local_ip}" != "" ];then
++    echo "${local_ip}"
++    return
++  fi
+   echo "$network"
+ }
+ 
+-- 
+2.41.0
+

@@ -1,0 +1,51 @@
+add_newline = false             # Don't print a new line at the start of the prompt
+
+# Replace the "❯" symbol in the prompt with "⟶"
+[character]                     # The name of the module we are configuring is "character"
+success_symbol = "[❯](bold green) "
+error_symbol = "[✗](bold red) "
+
+[custom.tztime]
+command = 'date +"%m-%d %T"'
+when = "true"
+format = '[🕙 $symbol($output)](bold purple) '
+
+[directory]                     # The name of the module we are configuring is "directory"
+truncation_length = -1
+truncate_to_repo = false
+style = "bold blue"
+
+[git_branch]                    # The name of the module we are configuring is "git_branch"
+symbol = "🍣"
+style = "bold yellow"
+ignore_branches = ['master', 'main']
+
+[git_status]                    #
+conflicted = "🏳"
+ahead = "⬆️"
+behind = "⬇️"
+diverged = "⇕"
+untracked = "🤷"
+stashed = "📦"
+modified = "📝"
+staged = '[➕\($count\)](green)'
+renamed = "👅"
+deleted = "🗑"
+
+[hostname]                      # The name of the module we are configuring is "hostname"
+ssh_only = false
+format =  "[$hostname](bold red) "
+style = "bold dimmed white"
+disabled = false
+
+[memory_usage]                  # The name of the module we are configuring is "memory_usage"
+disabled = false
+threshold = 30
+style = "bold dimmed green"
+
+[package]                       # The name of the module we are configuring is "package"
+disabled = true                 # Disable the package module, hiding it from the prompt completely
+
+[username]                      # The name of the module we are configuring is "username"
+style_user = "bold dimmed blue"
+show_always = true

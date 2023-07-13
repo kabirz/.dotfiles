@@ -1,0 +1,62 @@
+[init]
+	defaultBranch = main
+
+[core]
+	editor = vim
+  pager = delta
+
+[color]
+	ui = auto
+
+[http]
+	sslVerify = false
+
+[user]
+	name = kabirz
+	email = jxwazxzhp@126.com
+
+[alias]
+	st = status
+	br = branch
+	ci = commit
+	co = checkout
+	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+	view = !tig
+
+[tar "tar.xz"]
+	command = xz -c
+
+[url "git@github.com:"]
+	insteadOf = https://github.com
+
+
+[url "git@github.com:"]
+	pushInsteadOf = https://github.com
+
+[merge]
+  conflictstyle = diff3
+
+[diff]
+  colorMoved = default
+
+[interactive]
+  diffFilter = delta --color-only
+
+[delta]
+	side-by-side = true
+	features = decorations
+  navigate = true
+  light = false
+  line-numbers = true
+
+[delta "interactive"]
+	keep-plus-minus-markers = false
+
+[delta "decorations"]
+	commit-decoration-style = blue ol
+	commit-style = raw
+	file-style = omit
+	hunk-header-decoration-style = blue box
+	hunk-header-file-style = red
+	hunk-header-line-number-style = "#067a00"
+	hunk-header-style = file line-number syntax
