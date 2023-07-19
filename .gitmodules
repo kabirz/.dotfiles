@@ -12,7 +12,7 @@
 	branch = main
 [submodule "as_user"]
 	path = nvim/AstroNvim/user
-	url = https://github.com/kabirz/AstroNvim_user.git
+	url = https://github.com/kabirz/user.nvim.git
 	branch = main
 [submodule "zimfw"]
 	path = zimfw
