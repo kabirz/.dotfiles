@@ -6,16 +6,16 @@
 # install nvim
 install_nvim_nvchad() {
   pushd nvim/NvChad || exit
-  rm base/lua/custom -fr
-  rm ~/.config/nvim -fr
+  rm -fr base/lua/custom
+  rm -fr ~/.config/nvim
   ln -s "$(pwd)"/custom base/lua/custom
   ln -s "$(pwd)"/base ~/.config/nvim
   popd || exit
 }
 install_nvim_astro() {
   pushd nvim/AstroNvim || exit
-  rm base/lua/user -fr
-  rm ~/.config/nvim -fr
+  rm -fr base/lua/user
+  rm -fr ~/.config/nvim
   ln -s "$(pwd)"/user base/lua/user
   ln -s "$(pwd)"/base ~/.config/nvim
   popd || exit
