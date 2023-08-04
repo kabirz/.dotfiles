@@ -46,6 +46,8 @@ for element in "$@"; do
     ln -s "$(pwd)"/joshuto ~/.config
   elif [[ "$element" == "gitui" ]]; then
     ln -s "$(pwd)"/gitui ~/.config
+  elif [[ "$element" == "neofetch" ]]; then
+    ln -s "$(pwd)"/neofetch ~/.config
   elif [[ "$element" == "zim" ]]; then
     pushd zimfw || exit
     ./install.sh

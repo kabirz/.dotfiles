@@ -1,5 +1,18 @@
 # dotfiles
 
+## dependencies
+
+- neovim
+- zsh
+- git
+- tmux
+- alacritty
+- starship
+- alacritty
+- gitui
+- joshuto
+- zimfw
+
 ## get source
 
 ```shell
@@ -23,15 +36,8 @@
 | joshuto   |   jo     |
 | gitui     |   gitui  |
 | zimfw     |   zim    |
+| neofetch  | neofetch |
 
 ```shell
     ./install.sh [as]...
-```
-
-then open tmux and input key prefix + I for install tmux plugin
-apply network plugin for tmux
-
-```shell
-    cd ~/.tmux/plugins/tmux
-    git am ~/.dotfiles/pathches/network-show-ip-address.patch
 ```

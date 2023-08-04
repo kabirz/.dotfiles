@@ -22,9 +22,9 @@ ignore_branches = ['master', 'main']
 
 [git_status]                    #
 conflicted = "🏳"
-ahead = "⬆️"
-behind = "⬇️"
-diverged = "⇕"
+ahead = "⬆️ "
+behind = "⬇️ "
+diverged = "↕️ "
 untracked = "🤷"
 stashed = "📦"
 modified = "📝"
