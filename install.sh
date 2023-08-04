@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/zsh
 
 # install nvim for NvChad
 install_nvim_nvchad() {
@@ -21,28 +21,32 @@ install_nvim_astro() {
 }
 
 for element in "$@"; do
-  if [ "$element" == "nv" ]; then
+  if [[ "$element" == "nv" ]]; then
     install_nvim_nvchad
-  elif [ "$element" == "as" ]; then
+  elif [[ "$element" == "as" ]]; then
     install_nvim_astro
-  elif [ "$element" == "git" ]; then
+  elif [[ "$element" == "git" ]]; then
+    rm -fr ~/.gitconfig
     ln -s "$(pwd)"/.gitconfig ~
-  elif [ "$element" == "tmux" ]; then
-    git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+  elif [[ "$element" == "tmux" ]]; then
+    if [[ ! -d ~/.tmux/plugins/tpm ]]; then
+      git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+    fi
+    rm -fr ~/.tmux.conf
     ln -s "$(pwd)"/.tmux.conf ~
-  elif [ "$element" == "cargo" ]; then
+  elif [[ "$element" == "cargo" ]]; then
     ln -s "$(pwd)"/.cargo_config.toml ~/.cargo/config
-  elif [ "$element" == "ala" ]; then
+  elif [[ "$element" == "ala" ]]; then
     ln -s "$(pwd)"/alacritty ~/.config
-  elif [ "$element" == "star" ]; then
+  elif [[ "$element" == "star" ]]; then
     ln -s "$(pwd)"/starship.toml ~/.config
-  elif [ "$element" == "conda" ]; then
+  elif [[ "$element" == "conda" ]]; then
     ln -s "$(pwd)"/.condarc ~/.condarc
-  elif [ "$element" == "jo" ]; then
+  elif [[ "$element" == "jo" ]]; then
     ln -s "$(pwd)"/joshuto ~/.config
-  elif [ "$element" == "gitui" ]; then
+  elif [[ "$element" == "gitui" ]]; then
     ln -s "$(pwd)"/gitui ~/.config
-  elif [ "$element" == "zim" ]; then
+  elif [[ "$element" == "zim" ]]; then
     pushd zimfw || exit
     ./install.sh
     popd || exit

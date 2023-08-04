@@ -4,7 +4,7 @@ linker = "lld"
 
 [source.crates-io]
 registry = "https://github.com/rust-lang/crates.io-index"
-replace-with = 'sjtu'
+replace-with = 'tuna'
 
 # 中国科学技术大学
 [source.ustc]
