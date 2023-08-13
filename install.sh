@@ -48,6 +48,17 @@ for element in "$@"; do
     ln -s "$(pwd)"/gitui ~/.config
   elif [[ "$element" == "neofetch" ]]; then
     ln -s "$(pwd)"/neofetch ~/.config
+  elif [[ "$element" == "ssh" ]]; then
+    if [[ ! -d ids ]]; then
+      git clone https://github.com/kabirz/myid ids
+    fi
+    chmod 0400 ids/ssh/id_rsa
+    ln -s "$(pwd)"/ids/ssh/config ~/.ssh
+  elif [[ "$element" == "netrc" ]]; then
+    if [[ ! -d ids ]]; then
+      git clone https://github.com/kabirz/myid ids
+    fi
+    ln -s "$(pwd)"/ids/.netrc ~
   elif [[ "$element" == "zim" ]]; then
     pushd zimfw || exit
     ./install.sh

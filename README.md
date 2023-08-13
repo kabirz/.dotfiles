@@ -37,6 +37,8 @@
 | gitui     |   gitui  |
 | zimfw     |   zim    |
 | neofetch  | neofetch |
+| sshconfig |   ssh    |
+| netrc     |   netrc  |
 
 ```shell
     ./install.sh [as]...

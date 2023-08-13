@@ -2,8 +2,8 @@
 	defaultBranch = main
 
 [core]
-	editor = vim
-  pager = delta
+	editor = nvim
+	pager = delta
 
 [color]
 	ui = auto
@@ -26,12 +26,8 @@
 [tar "tar.xz"]
 	command = xz -c
 
-[url "git@github.com:"]
+[url "gh:"]
 	insteadOf = https://github.com
-
-
-[url "git@github.com:"]
-	pushInsteadOf = https://github.com
 
 [merge]
   conflictstyle = diff3
