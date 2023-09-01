@@ -48,6 +48,8 @@ for element in "$@"; do
     ln -s "$(pwd)"/gitui ~/.config
   elif [[ "$element" == "neofetch" ]]; then
     ln -s "$(pwd)"/neofetch ~/.config
+  elif [[ "$element" == "zellij" ]]; then
+    ln -s "$(pwd)"/zellij ~/.config
   elif [[ "$element" == "ssh" ]]; then
     if [[ ! -d ids ]]; then
       git clone https://github.com/kabirz/myid ids

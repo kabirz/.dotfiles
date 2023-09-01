@@ -8,7 +8,7 @@
 - tmux
 - alacritty
 - starship
-- alacritty
+- zellij
 - gitui
 - joshuto
 - zimfw
@@ -39,6 +39,7 @@
 | neofetch  | neofetch |
 | sshconfig |   ssh    |
 | netrc     |   netrc  |
+| zellij    |  zellij  |
 
 ```shell
     ./install.sh [as]...
