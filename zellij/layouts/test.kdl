@@ -1,0 +1,10 @@
+layout {
+  pane
+  pane borderless=true size=1 {
+      plugin location="file:~/compact-bar.wasm"
+  }
+}
+
+session_name "Kastly"
+attach_to_session true
+pane_frames true
