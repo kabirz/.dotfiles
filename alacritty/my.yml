@@ -1,5 +1,6 @@
 import:
   - ~/.config/alacritty/theme.yml
+  - ~/.config/alacritty/keymaps.yml
 
 window:
   opacity: 0.9

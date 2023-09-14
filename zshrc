@@ -6,3 +6,7 @@ if (( ${+commands[zellij]} )); then
     alias zaw='zellij -l raw a -c'
     alias zl='zellij ls'
 fi
+
+if (( ${+commands[joshuto]} )); then
+    alias alias jo=joshuto
+fi
