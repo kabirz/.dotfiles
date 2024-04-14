@@ -1,19 +1,7 @@
-[submodule "NvChad"]
-	path = nvim/NvChad/base
-	url = ../../NvChad/NvChad.git
-	branch = v2.0
-[submodule "nv_custom"]
-	path = nvim/NvChad/custom
-	url = ../NvChad-custom.git
-	branch = main
-[submodule "AstroNvim"]
-	path = nvim/AstroNvim/base
-	url = ../../AstroNvim/AstroNvim.git
-	branch = main
 [submodule "as_user"]
-	path = nvim/AstroNvim/user
+	path = nvim_user
 	url = ../user.nvim.git
-	branch = main
+	branch = astronvim_v4
 [submodule "zimfw"]
 	path = zimfw
 	url = ../zimfw.git

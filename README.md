@@ -25,7 +25,6 @@
 
 |  context  |  option  |
 |  -------  |  ------  |
-| nvchad    |   nv     |
 | astro     |   as     |
 | gitconfig |   git    |
 | tmux      |   tmux   |

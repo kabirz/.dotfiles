@@ -1,23 +1,9 @@
 #!/bin/zsh
 
-# install nvim for NvChad
-install_nvim_nvchad() {
-  pushd nvim/NvChad || exit
-  rm -fr base/lua/custom
-  rm -fr ~/.config/nvim
-  ln -s "$(pwd)"/custom base/lua
-  ln -s "$(pwd)"/base ~/.config/nvim
-  popd || exit
-}
-
 # install nvim for AstroNvim
 install_nvim_astro() {
-  pushd nvim/AstroNvim || exit
-  rm -fr base/lua/user
   rm -fr ~/.config/nvim
-  ln -s "$(pwd)"/user base/lua
-  ln -s "$(pwd)"/base ~/.config/nvim
-  popd || exit
+  ln -s "$(pwd)"/nvim_user ~/.config/nvim
 }
 
 for element in "$@"; do

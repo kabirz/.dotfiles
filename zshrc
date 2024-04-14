@@ -10,3 +10,6 @@ fi
 if (( ${+commands[joshuto]} )); then
     alias alias jo=joshuto
 fi
+if (( ${+commands[fzf]} )); then
+    eval "$(fzf --zsh)"
+fi
