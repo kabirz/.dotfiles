@@ -4,7 +4,7 @@ layout {
         pane size=1 borderless=true {
             plugin location="file:~/.dotfiles/zellij/zjstatus.wasm" {
                 format_left   "{mode} #[fg=#19B4FA,bg=#282A36,bold]{session} {tabs}"
-                format_right  "{command_git_branch} {datetime}"
+                format_right  "#[fg=green,bg=#282A36]{command_ram_info}#[fg=#8A2BE2,bg=green]{command_cpu_info}#[fg=#686A76,bg=#8A2BE2]{datetime}"
                 format_space  "#[bg=#282A36]"
 
 
@@ -22,15 +22,32 @@ layout {
                 mode_rename_tab   "#[bg=#FF1493,bold]{name}"
                 mode_session      "#[bg=#0000FF,bold]{name}"
 
+                mode_resize       "#[bg=#89B4FA,bold]{name}"
+                mode_pane         "#[bg=#89B4FA,bold]{name}"
+                mode_scroll       "#[bg=#89B4FA,bold]{name}"
+                mode_enter_search "#[bg=#89B4FA,bold]{name}"
+                mode_search       "#[bg=#89B4FA,bold]{name}"
+                mode_rename_pane  "#[bg=#89B4FA,bold]{name}"
+                mode_move         "#[bg=#89B4FA,bold]{name}"
+                mode_prompt       "#[bg=#89B4FA,bold]{name}"
+
                 tab_normal "#[fg=#282A36,bg=#282A36]#[bg=#282A36,fg=#87CEEB,bold]{index} {name}{sync_indicator}{fullscreen_indicator}{floating_indicator}#[bg=#282A36,fg=#282A36]"
-                tab_normal_sync         "#[fg=#6C7086,bg=#181825] {index} {name} <> "
                 tab_active "#[bg=#AAAAAA,fg=#282A36]#[bg=#AAAAAA,fg=#0000CD,bold]{index} {name}{sync_indicator}{fullscreen_indicator}{floating_indicator}#[bg=#282A36,fg=#AAAAAA]"
                 tab_sync_indicator       " "
                 tab_fullscreen_indicator "□ "
                 tab_floating_indicator   "󰉈 "
 
+                command_ram_info_command     "bash -c \"bash ~/.dotfiles/zellij/scripts/ram_info.sh\""
+                command_ram_info_format      "#[fg=blue,bg=green] {stdout} "
+                command_ram_info_interval    "3"
+                command_ram_info_rendermode  "static"
 
-                datetime        "#[fg=#7B68EE,bold] {format} "
+                command_cpu_info_command     "bash -c \"bash ~/.dotfiles/zellij/scripts/cpu_info.sh\""
+                command_cpu_info_format      "#[fg=blue,bg=#8A2BE2] {stdout} "
+                command_cpu_info_interval    "3"
+                command_cpu_info_rendermode  "static"
+
+                datetime        "#[fg=#aBa8aE,bg=#686A76,bold] {format} "
                 datetime_format "%A, %m-%d %H:%M"
                 datetime_timezone "Asia/Shanghai"
             }
