@@ -38,12 +38,12 @@ layout {
                 tab_floating_indicator   "󰉈 "
 
                 command_ram_info_command     "bash -c \"bash ~/.dotfiles/zellij/scripts/ram_info.sh\""
-                command_ram_info_format      "#[fg=blue,bg=green] {stdout} "
+                command_ram_info_format      "#[fg=black,bg=green] {stdout} "
                 command_ram_info_interval    "3"
                 command_ram_info_rendermode  "static"
 
                 command_cpu_info_command     "bash -c \"bash ~/.dotfiles/zellij/scripts/cpu_info.sh\""
-                command_cpu_info_format      "#[fg=blue,bg=#8A2BE2] {stdout} "
+                command_cpu_info_format      "#[fg=black,bg=#8A2BE2] {stdout} "
                 command_cpu_info_interval    "3"
                 command_cpu_info_rendermode  "static"
 
