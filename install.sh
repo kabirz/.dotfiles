@@ -36,6 +36,9 @@ for element in "$@"; do
     ln -s "$(pwd)"/neofetch ~/.config
   elif [[ "$element" == "zellij" ]]; then
     ln -s "$(pwd)"/zellij ~/.config
+    if [[ ! -f zellij/zjstatus.wasm ]]; then
+      wget https://github.com/dj95/zjstatus/releases/latest/download/zjstatus.wasm -O zellij/zjstatus.wasm
+    fi
   elif [[ "$element" == "ssh" ]]; then
     if [[ ! -d ids ]]; then
       git clone https://github.com/kabirz/myid ids

@@ -1,3 +1,4 @@
 .ccls-cache
 .clangd
 ids
+zellij/*.wasm

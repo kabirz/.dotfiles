@@ -2,28 +2,44 @@ layout {
     default_tab_template {
         children
         pane size=1 borderless=true {
-            plugin location="zellij:compact-bar"
+            plugin location="file:~/.dotfiles/zellij/zjstatus.wasm" {
+                format_left   "{mode} #[fg=#19B4FA,bg=#282A36,bold]{session} {tabs}"
+                format_right  "{command_git_branch} {datetime}"
+                format_space  "#[bg=#282A36]"
+
+
+                border_enabled  "true"
+                border_char     "─"
+                border_format   "#[fg=#6C7086]{char}"
+                border_position "top"
+
+                hide_frame_for_single_pane "true"
+
+                mode_normal       "#[bg=#8A2BE2,bold]{name}"
+                mode_tmux         "#[bg=#FFD700,bold]{name}"
+                mode_locked       "#[bg=#808080,bold]{name}"
+                mode_tab          "#[bg=#00FF00,bold]{name}"
+                mode_rename_tab   "#[bg=#FF1493,bold]{name}"
+                mode_session      "#[bg=#0000FF,bold]{name}"
+
+                tab_normal "#[fg=#282A36,bg=#282A36]#[bg=#282A36,fg=#87CEEB,bold]{index} {name}{sync_indicator}{fullscreen_indicator}{floating_indicator}#[bg=#282A36,fg=#282A36]"
+                tab_normal_sync         "#[fg=#6C7086,bg=#181825] {index} {name} <> "
+                tab_active "#[bg=#AAAAAA,fg=#282A36]#[bg=#AAAAAA,fg=#0000CD,bold]{index} {name}{sync_indicator}{fullscreen_indicator}{floating_indicator}#[bg=#282A36,fg=#AAAAAA]"
+                tab_sync_indicator       " "
+                tab_fullscreen_indicator "□ "
+                tab_floating_indicator   "󰉈 "
+
+
+                datetime        "#[fg=#7B68EE,bold] {format} "
+                datetime_format "%A, %m-%d %H:%M"
+                datetime_timezone "Asia/Shanghai"
+            }
         }
     }
-    tab_template name="tab1" {
-        children
-        pane size=2 borderless=true {
-            plugin location="zellij:status-bar"
-        }
-        pane size=1 borderless=true {
-            plugin location="zellij:compact-bar"
-        }
-    }
-    tab name="main" focus=true {
+    tab name="home" cwd="~" focus=true {
         pane
     }
-    tab name="linux" cwd="~/code/linux" {
-        pane
-    }
-    tab name="rtos" cwd="~/code/rtos" {
-        pane
-    }
-    tab1 name="tips" {
+    tab name="main" {
         pane
     }
 }
