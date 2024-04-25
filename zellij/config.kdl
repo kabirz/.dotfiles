@@ -158,3 +158,4 @@ plugins {
 }
 pane_frames false
 theme "dracula"
+default_shell "zsh"
