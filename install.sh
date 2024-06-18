@@ -52,6 +52,8 @@ for element in "$@"; do
       git clone https://github.com/kabirz/myid ids
     fi
     ln -s "$(pwd)"/ids/.netrc ~
+  elif [[ "$element" == "mamba" ]]; then
+    wget micro.mamba.pm/install.sh -qO - | ${SHELL}
   elif [[ "$element" == "zim" ]]; then
     pushd zimfw || exit
     ./install.sh

@@ -9,24 +9,10 @@ if (( ${+commands[zellij]} )); then
     alias zd='zellij d'
 fi
 
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup=`~/mambaforge/bin/conda shell.zsh hook 2> /dev/null`
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f ~/mambaforge/etc/profile.d/conda.sh ]; then
-        . ~/mambaforge/etc/profile.d/conda.sh
-    else
-        export PATH=~/mambaforge/bin:$PATH
-    fi
-fi
-unset __conda_setup
-
-if [ -f ~/mambaforge/etc/profile.d/mamba.sh ]; then
-    . ~/mambaforge/etc/profile.d/mamba.sh
+if [ -d ~/micromamba ]; then
+    alias conda=micromamba
+elif [ -d~/mambaforge ]; then
     alias conda=mamba
 fi
-# <<< conda initialize <<<
 
 export PATH=~/.dotfiles/bin:$PATH
