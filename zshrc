@@ -11,7 +11,7 @@ fi
 
 if [ -d ~/micromamba ]; then
     alias conda=micromamba
-elif [ -d~/mambaforge ]; then
+elif [ -d ~/mambaforge ]; then
     alias conda=mamba
 fi
 
