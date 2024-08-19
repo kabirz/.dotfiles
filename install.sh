@@ -27,9 +27,7 @@ for element in "$@"; do
   elif [[ "$element" == "star" ]]; then
     ln -s "$(pwd)"/starship.toml ~/.config
   elif [[ "$element" == "conda" ]]; then
-    wget https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-$(uname)-$(uname -m).sh
-    bash Mambaforge-$(uname)-$(uname -m).sh
-    rm Mambaforge-$(uname)-$(uname -m).sh
+    wget -q -O - micro.mamba.pm/install.sh | bash
   elif [[ "$element" == "jo" ]]; then
     ln -s "$(pwd)"/joshuto ~/.config
   elif [[ "$element" == "gitui" ]]; then
