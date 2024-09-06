@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# use openocd for stm32f7
+# openocd -f interface/stlink.cfg -f board/stm32f7discovery.cfg -c program rt-thread.elf verify reset; shutdown
+
+elf=${1:-out.elf}
+chip=${2:-STM32F767IGTx}
+
+cargo-flash --chip "$chip" --path "$elf"

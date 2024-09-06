@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# uart access for user
+# sudo usermod -aG dialout
+
+
+dev=${1:-/dev/ttyUSB0}
+bps=${2:-115200}
+python3 -m serial "$dev" "$bps" -f direct
