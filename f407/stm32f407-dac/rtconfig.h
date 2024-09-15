@@ -130,6 +130,7 @@
 #define RT_USING_SERIAL_V1
 #define RT_SERIAL_USING_DMA
 #define RT_SERIAL_RB_BUFSZ 64
+#define RT_USING_ADC
 #define RT_USING_SPI
 #define RT_USING_SFUD
 #define RT_SFUD_USING_SFDP
@@ -153,6 +154,10 @@
 
 /* POSIX (Portable Operating System Interface) layer */
 
+#define RT_USING_POSIX_FS
+#define RT_USING_POSIX_POLL
+#define RT_USING_POSIX_SELECT
+#define RT_USING_POSIX_SOCKET
 
 /* Interprocess Communication (IPC) */
 
@@ -216,6 +221,33 @@
 
 /* IoT - internet of things */
 
+#define PKG_USING_FREEMODBUS
+#define PKG_MODBUS_SLAVE
+
+/* advanced configuration */
+
+#define RT_S_DISCRETE_INPUT_START 0
+#define RT_S_DISCRETE_INPUT_NDISCRETES 16
+#define RT_S_COIL_START 0
+#define RT_S_COIL_NCOILS 64
+#define RT_S_REG_INPUT_START 0
+#define RT_S_REG_INPUT_NREGS 100
+#define RT_S_REG_HOLDING_START 0
+#define RT_S_REG_HOLDING_NREGS 100
+#define RT_S_HD_RESERVE 0
+#define RT_S_IN_RESERVE 0
+#define RT_S_CO_RESERVE 0
+#define RT_S_DI_RESERVE 0
+/* end of advanced configuration */
+#define PKG_MODBUS_SLAVE_RTU
+#define PKG_MODBUS_SLAVE_TCP
+#define RT_MODBUS_SLAVE_USE_CONTROL_PIN
+#define MODBUS_SLAVE_RT_CONTROL_PIN_INDEX 10
+#define PKG_MODBUS_SLAVE_SAMPLE
+#define MB_SAMPLE_SLAVE_ADDR 1
+#define MB_SLAVE_USING_PORT_NUM 2
+#define MB_SLAVE_USING_PORT_BAUDRATE 115200
+#define PKG_USING_FREEMODBUS_LATEST_VERSION
 
 /* Wi-Fi */
 
@@ -239,15 +271,36 @@
 
 /* end of CYW43439 WiFi */
 /* end of Wi-Fi */
+#define PKG_USING_WIZNET
+#define WIZ_USING_W5500
+
+/* WIZnet device configure */
+
+#define WIZ_SPI_DEVICE "spi20"
+#define WIZ_RST_PIN 48
+#define WIZ_IRQ_PIN 49
+/* end of WIZnet device configure */
+
+/* WIZnet network configure */
+
+#define WIZ_IPADDR "192.168.1.10"
+#define WIZ_GWADDR "192.168.1.1"
+#define WIZ_MSKADDR "255.255.255.0"
+/* end of WIZnet network configure */
+#define WIZ_USING_PING
+#define PKG_USING_WIZNET_LATEST_VERSION
 
 /* IoT Cloud */
 
 /* end of IoT Cloud */
-#define PKG_USING_RYANW5500
-#define RYANW5500_SPI_DEVICE "spi20"
-#define RYANW5500_RST_PIN 0
-#define RYANW5500_IRQ_PIN 1
-#define PKG_USING_RYANW5500_LATEST_VERSION
+#define PKG_USING_TCPSERVER
+#define TCPSERVER_NAME "tcpserv"
+#define TCPSERVER_STACK_SIZE 4096
+#define TCPSERVER_PRIO 12
+#define TCPSERVER_SOCKET_MAX 512
+#define TCPSERVER_CLI_NUM 5
+#define PKG_TCPSERVER_SAMPLE
+#define PKG_USING_TCPSERVER_LATEST_VERSION
 /* end of IoT - internet of things */
 
 /* security packages */
@@ -401,6 +454,7 @@
 /* Onboard Peripheral Drivers */
 
 #define BSP_USING_SPI_FLASH
+#define BSP_USING_SPI_W5500
 #define BSP_USING_FS
 #define BSP_USING_FLASH_FATFS
 #define BSP_USING_FLASH_FS_AUTO_MOUNT
@@ -414,6 +468,9 @@
 #define BSP_USING_UART1
 #define BSP_USING_SPI
 #define BSP_USING_SPI1
+#define BSP_USING_SPI2
+#define BSP_USING_ADC
+#define BSP_USING_ADC1
 /* end of On-chip Peripheral Drivers */
 /* end of Hardware Drivers Config */
 

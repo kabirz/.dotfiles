@@ -10,6 +10,12 @@ menu "Onboard Peripheral Drivers"
         select RT_SFUD_USING_SFDP
         default n
 
+    config BSP_USING_SPI_W5500
+        bool "Enable SPI ethernet(w5500 spi2)"
+        select BSP_USING_SPI
+        select BSP_USING_SPI2
+        default n
+
     menuconfig BSP_USING_FS
         bool "Enable File System"
         select RT_USING_DFS
