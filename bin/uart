@@ -6,4 +6,4 @@
 
 dev=${1:-/dev/ttyUSB0}
 bps=${2:-115200}
-python3 -m serial "$dev" "$bps" -f direct
+python3 -m serial "$dev" "$bps" -f direct --rts 0 --dtr 0
