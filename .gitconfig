@@ -26,9 +26,6 @@
 [tar "tar.xz"]
 	command = xz -c
 
-[url "gh:"]
-	insteadOf = https://github.com
-
 [merge]
   conflictstyle = diff3
 

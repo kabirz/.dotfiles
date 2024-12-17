@@ -1,0 +1,98 @@
+#!/usr/bin/env python
+
+import argparse
+import os
+import shutil
+import subprocess
+from pathlib import Path
+from urllib import request
+
+CUR_PATH = Path(__file__).parent.parent
+HOME_PATH = Path(os.environ['HOME'])
+CFG_PATH = HOME_PATH / '.config'
+
+
+def download_file(url: str, output_path: str):
+    try:
+        request.urlretrieve(url, output_path)
+    except Exception as e:
+        print(f'Download {output_path} fialed: {e}')
+        exit(-1)
+
+
+def create_link(dst_path: Path, src: str):
+    if dst_path.exists():
+        if dst_path.is_symlink():
+            os.unlink(dst_path)
+        else:
+            shutil.rmtree(dst_path, ignore_errors=True)
+    os.symlink(CUR_PATH / src, dst_path)
+
+
+def zellij_install(dst_path: Path, src: str):
+    if dst_path.exists():
+        if dst_path.is_symlink():
+            os.unlink(dst_path)
+        else:
+            shutil.rmtree(dst_path, ignore_errors=True)
+    zjstatus_file = CUR_PATH / src / 'zjstatus.wasm'
+    if not zjstatus_file.exists():
+        url = 'https://github.com/dj95/zjstatus/releases/latest/download/zjstatus.wasm'
+        download_file(url, zjstatus_file.as_posix())
+    os.symlink(CUR_PATH / src, dst_path)
+
+
+def zim_install(zimfw: str, _cmd: str):
+    ZIM_ROOT_PATH = HOME_PATH / '.zim'
+    if ZIM_ROOT_PATH.exists():
+        shutil.rmtree(ZIM_ROOT_PATH, ignore_errors=True)
+    ZIM_ROOT_PATH.mkdir(parents=True, exist_ok=True)
+    ZIM_FW = ZIM_ROOT_PATH / 'zimfw.zsh'
+    url = 'https://raw.githubusercontent.com/zimfw/zimfw/refs/heads/master/zimfw.zsh'
+    download_file(url, ZIM_FW.as_posix())
+    create_link(HOME_PATH / '.zshenv', f'{zimfw}/zshenv')
+    create_link(HOME_PATH / '.zlogin', f'{zimfw}/zlogin')
+    create_link(HOME_PATH / '.zimrc', f'{zimfw}/zimrc')
+    old_path = os.getcwd()
+    os.chdir(HOME_PATH)
+    cmds = ['zsh', '.zim/zimfw.zsh', 'install']
+    subprocess.call(cmds)
+    ZSHRC = HOME_PATH / '.zshrc'
+    ZSHRC_ZIM = CUR_PATH / zimfw / 'zshrc'
+    os.chdir(old_path)
+    with ZSHRC.open('r+') as f:
+        for line in f:
+            if line.startswith(f'source {ZSHRC_ZIM}'):
+                break
+        else:
+            f.write(f'source {ZSHRC_ZIM}\n')
+
+
+def main():
+    pkgs = {
+        'nvim': (create_link, (CFG_PATH / 'nvim', 'nvim_user')),
+        'gitconfig': (create_link, (HOME_PATH / '.gitconfig', '.gitconfig')),
+        'ruff': (create_link, (HOME_PATH / 'ruff.toml', 'ruff.toml')),
+        'gitui': (create_link, (CFG_PATH / 'gitui', 'gitui')),
+        'startship': (create_link, (CFG_PATH / 'starship.toml', 'starship.toml')),
+        'joshuto': (create_link, (CFG_PATH / 'joshuto', 'joshuto')),
+        'neofetch': (create_link, (CFG_PATH / 'neofetch', 'neofetch')),
+        'zellij': (zellij_install, (CFG_PATH / 'zellij', 'zellij')),
+        'zim': (zim_install, ('zimfw', '')),
+        'all': (),
+    }
+    parser = argparse.ArgumentParser(description='tool for install dotfile')
+    parser.add_argument('package', choices=pkgs.keys(), help='install spec package')
+
+    args = parser.parse_args()
+    if args.package != 'all':
+        cmds = pkgs[args.package]
+        cmds[0](*cmds[1])
+    else:
+        for cmd_name, cmds in pkgs.items():
+            if cmd_name != 'all':
+                cmds[0](*cmds[1])
+
+
+if __name__ == '__main__':
+    main()
