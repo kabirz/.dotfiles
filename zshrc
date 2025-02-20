@@ -15,4 +15,8 @@ elif [ -d ~/mambaforge ]; then
     alias conda=mamba
 fi
 
+# enviroment
+# cmake for lsp
+export CMAKE_EXPORT_COMPILE_COMMANDS=ON
+
 export PATH=~/.dotfiles/bin:$PATH
