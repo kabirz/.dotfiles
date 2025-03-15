@@ -23,23 +23,18 @@
 
 ## install
 
-|  context  |  option  |
-|  -------  |  ------  |
-| astro     |   as     |
-| gitconfig |   git    |
-| tmux      |   tmux   |
-| cargo     |   cargo  |
-| alacrity  |   ala    |
-| starship  |   star   |
-| anaconda  |   conda  |
-| joshuto   |   jo     |
-| gitui     |   gitui  |
-| zimfw     |   zim    |
-| neofetch  | neofetch |
-| sshconfig |   ssh    |
-| netrc     |   netrc  |
-| zellij    |  zellij  |
+### help
 
-```shell
-    ./install.sh [as]...
+```log
+usage: dot_install [-h]
+                   {nvim,gitconfig,cargo,ruff,gitui,starship,joshuto,alacritty,neofetch,zellij,zim,clangd,all}
+
+tool for install dotfile
+
+positional arguments:
+  {nvim,gitconfig,cargo,ruff,gitui,starship,joshuto,alacritty,neofetch,zellij,zim,clangd,all}
+                        install spec package
+
+options:
+  -h, --help            show this help message and exit
 ```
