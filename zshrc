@@ -23,16 +23,28 @@ function closeproxy() {
     echo "already close proxy"
 }
 
-function setuv() {
-    if [[ "$#" == "1" ]] then
-        export UV_DEFAULT_INDEX=$1
-    else
-        export UV_DEFAULT_INDEX=https://pypi.tuna.tsinghua.edu.cn/simple
+# uv
+if (( ${+commands[uv]} )); then
+    type -p _uv > /dev/null
+    if (( $? != 0 )); then
+        eval "$(uv generate-shell-completion zsh)"
     fi
-}
-function unsetuv() {
-    unset UV_DEFAULT_INDEX
-}
+    type -p _uvx > /dev/null
+    if (( $? != 0 )); then
+        eval "$(uvx --generate-shell-completion zsh)"
+    fi
+    function setuv() {
+        if [[ "$#" == "1" ]] then
+            export UV_DEFAULT_INDEX=$1
+        else
+            export UV_DEFAULT_INDEX=https://pypi.tuna.tsinghua.edu.cn/simple
+        fi
+    }
+
+    function unsetuv() {
+        unset UV_DEFAULT_INDEX
+    }
+fi
 # zellij
 if (( ${+commands[zellij]} )); then
     alias zz='zellij -l code a -c zhp'
