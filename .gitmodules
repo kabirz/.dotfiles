@@ -2,7 +2,3 @@
 	path = nvim_user
 	url = ../user.nvim.git
 	branch = astronvim_v4
-[submodule "zimfw"]
-	path = zimfw
-	url = ../zimfw.git
-	branch = main

@@ -73,12 +73,15 @@ def zim_install(zimfw: str, _cmd: str):
     ZSHRC = HOME_PATH / '.zshrc'
     ZSHRC_ZIM = CUR_PATH / zimfw / 'zshrc'
     os.chdir(old_path)
-    with ZSHRC.open('r+') as f:
-        for line in f:
-            if line.startswith(f'source {ZSHRC_ZIM}'):
-                break
-        else:
-            f.write(f'source {ZSHRC_ZIM}\n')
+    if ZSHRC.exists():
+        with ZSHRC.open('r+') as f:
+            for line in f:
+                if line.startswith(f'source {ZSHRC_ZIM}'):
+                    break
+            else:
+                f.write(f'source {ZSHRC_ZIM}\n')
+    else:
+        ZSHRC.write_text(f'source {ZSHRC_ZIM}\n')
 
 
 def clangd_install(name: str, _cmd: str):
@@ -99,7 +102,7 @@ def main():
         'neofetch': (create_link, (CFG_PATH / 'neofetch', 'neofetch')),
         'zellij': (zellij_install, (CFG_PATH / 'zellij', 'zellij')),
         'tmux': (tmux_install, (HOME_PATH / '.tmux.conf', '.tmux.conf')),
-        'zim': (zim_install, ('zimfw', '')),
+        'zim': (zim_install, ('zsh', '')),
         'clangd': (clangd_install, ('.clangd', '')),
         'all': (),
     }

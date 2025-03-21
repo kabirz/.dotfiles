@@ -1,0 +1,17 @@
+zmodule environment
+zmodule git
+zmodule input
+zmodule termtitle
+zmodule utility
+zmodule archive
+zmodule fzf
+
+zmodule git-info
+
+zmodule zsh-users/zsh-completions
+zmodule completion
+zmodule zsh-users/zsh-autosuggestions
+zmodule zsh-users/zsh-syntax-highlighting
+zmodule zsh-users/zsh-history-substring-search
+zmodule hcgraf/zsh-sudo -n sudo
+zmodule Tarrasch/zsh-command-not-found -n command-not-found
