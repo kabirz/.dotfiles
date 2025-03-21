@@ -68,6 +68,9 @@ def zim_install(zimfw: str, _cmd: str):
     create_link(HOME_PATH / '.zimrc', f'{zimfw}/zimrc')
     old_path = os.getcwd()
     os.chdir(HOME_PATH)
+    with (HOME_PATH / '.dir_colors').open('w') as f:
+        cmds = ['dircolors', '-p']
+        subprocess.call(cmds, stdout=f)
     cmds = ['zsh', '.zim/zimfw.zsh', 'install']
     subprocess.call(cmds)
     ZSHRC = HOME_PATH / '.zshrc'
