@@ -21,13 +21,13 @@ def download_file(url: str, output_path: str):
             filled_length = int(bar_length * percent / 100)
             percent = int(percent)
             bar = '#' * filled_length + '-' * (bar_length - filled_length)
-            print(f"[{bar}] {percent}%  {downloaded/2**20:.02f}MB/{totalsize/2**20:.02f}MB", end='\r')
+            print(f'[{bar}] {percent}%  {downloaded / 2**20:.02f}MB/{totalsize / 2**20:.02f}MB', end='\r')
         else:
-            print(f"Downloaded: {downloaded} bytes", end='\r')
+            print(f'Downloaded: {downloaded} bytes', end='\r')
 
-    print(f"Downloading {url} ...")
+    print(f'Downloading {url} ...')
     request.urlretrieve(url, output_path, reporthook)
-    print("\nDownload complete!")
+    print('\nDownload complete!')
 
 
 def create_link(dst_path: Path, src: str):
@@ -44,6 +44,15 @@ def zellij_install(dst_path: Path, src: str):
     if not zjstatus_file.exists():
         url = 'https://github.com/dj95/zjstatus/releases/latest/download/zjstatus.wasm'
         download_file(url, zjstatus_file.as_posix())
+
+
+def tmux_install(dst_path: Path, src: str):
+    create_link(dst_path, src)
+    git_path = HOME_PATH / '.tmux/plugins/tpm'
+    if not git_path.exists():
+        url = 'https://github.com/tmux-plugins/tpm'
+        cmds = ['git', 'clone', url, git_path]
+        subprocess.call(cmds)
 
 
 def zim_install(zimfw: str, _cmd: str):
@@ -76,6 +85,7 @@ def clangd_install(name: str, _cmd: str):
     clangd_cfg = HOME_PATH / name
     clangd_cfg.write_text('CompileFlags:\n  Remove: -mabi=lp64')
 
+
 def main():
     pkgs = {
         'nvim': (create_link, (CFG_PATH / 'nvim', 'nvim_user')),
@@ -88,6 +98,7 @@ def main():
         'alacritty': (create_link, (CFG_PATH / 'alacritty', 'alacritty')),
         'neofetch': (create_link, (CFG_PATH / 'neofetch', 'neofetch')),
         'zellij': (zellij_install, (CFG_PATH / 'zellij', 'zellij')),
+        'tmux': (tmux_install, (HOME_PATH / '.tmux.conf', '.tmux.conf')),
         'zim': (zim_install, ('zimfw', '')),
         'clangd': (clangd_install, ('.clangd', '')),
         'all': (),

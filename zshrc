@@ -54,6 +54,17 @@ if (( ${+commands[zellij]} )); then
     alias zl='zellij ls'
     alias zd='zellij d'
 fi
+# tmux
+if (( ${+commands[tmux]} )); then
+    alias ta='tmux attach -t'
+    alias tz='tmux attach -t zhp'
+    alias tac='tmux new-session -s zhp'
+    alias tad='tmux attach -d -t'
+    alias ts='tmux new-session -s'
+    alias tl='tmux list-sessions'
+    alias tksv='tmux kill-server'
+    alias tkss='tmux kill-session -t'
+fi
 
 if [ -d ~/micromamba ]; then
     alias conda=micromamba
