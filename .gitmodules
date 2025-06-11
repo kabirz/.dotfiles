@@ -1,4 +1,4 @@
 [submodule "as_user"]
 	path = nvim_user
 	url = ../user.nvim.git
-	branch = astronvim_v4
+	branch = astronvim_v5
