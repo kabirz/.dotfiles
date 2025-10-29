@@ -121,7 +121,7 @@ bindkey '^N' history-substring-search-down
 bindkey -M vicmd 'k' history-substring-search-up
 bindkey -M vicmd 'j' history-substring-search-down
 # start enable completion
-source $(dirname $(readlink -f ${(%):-%N}))/../zshrc
+source ${${(%):-%x}:A:h:h}/zshrc
 # }}} End configuration added by Zim install
 # local config
 [ ! -e ~/.myrc ] || source ~/.myrc

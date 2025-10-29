@@ -7,7 +7,7 @@ import subprocess
 from pathlib import Path
 from urllib import request
 
-CUR_PATH = Path(__file__).parent.parent
+CUR_PATH = Path(__file__).parent.parent.absolute()
 HOME_PATH = Path(os.environ['HOME'])
 CFG_PATH = HOME_PATH / '.config'
 
@@ -30,7 +30,7 @@ def download_file(url: str, output_path: str):
     print('\nDownload complete!')
 
 
-def create_link(dst_path: Path, src: str):
+def create_link(dst_path: Path, src: str|Path):
     if dst_path.is_symlink() or dst_path.is_file():
         os.unlink(dst_path)
     else:
@@ -61,11 +61,12 @@ def zim_install(zimfw: str, _cmd: str):
         shutil.rmtree(ZIM_ROOT_PATH, ignore_errors=True)
     ZIM_ROOT_PATH.mkdir(parents=True, exist_ok=True)
     ZIM_FW = ZIM_ROOT_PATH / 'zimfw.zsh'
+    os.environ['ZIM_HOME'] = ZIM_ROOT_PATH.as_posix()
     url = 'https://raw.githubusercontent.com/zimfw/zimfw/refs/heads/master/zimfw.zsh'
     download_file(url, ZIM_FW.as_posix())
-    create_link(HOME_PATH / '.zshenv', f'{zimfw}/zshenv')
-    create_link(HOME_PATH / '.zlogin', f'{zimfw}/zlogin')
-    create_link(HOME_PATH / '.zimrc', f'{zimfw}/zimrc')
+    create_link(HOME_PATH / '.zshenv', CUR_PATH/zimfw/'zshenv')
+    create_link(HOME_PATH / '.zlogin', CUR_PATH/zimfw/'zlogin')
+    create_link(HOME_PATH / '.zimrc', CUR_PATH/zimfw/'zimrc')
     old_path = os.getcwd()
     os.chdir(HOME_PATH)
     with (HOME_PATH / '.dir_colors').open('w') as f:
