@@ -10,10 +10,15 @@
 
 [http]
 	sslVerify = false
+	proxy = http://127.0.0.1:7890
+
+[https]
+	proxy = http://127.0.0.1:7890
 
 [user]
 	name = kabirz
 	email = jxwazxzhp@126.com
+	; signingkey = 1472FB5FD5F8D611
 
 [alias]
 	st = status

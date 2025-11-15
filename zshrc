@@ -151,8 +151,23 @@ function setproxy() {
 function closeproxy() {
     unset http_proxy
     unset https_proxy
+    unset all_proxy
 
     echo "already close proxy"
+}
+
+function allproxy() {
+    ip='127.0.0.1'
+    port=7890
+    if [[ "$#" == "1" ]] then
+        ip=$1
+    elif [[ "$#" == "2" ]] then
+        ip=$1
+        port=$2
+    fi
+    export all_proxy="http://${ip}:${port}"
+    export no_proxy='127.0.0.1,localhost,192.168.*.*,10.*.*.*'
+    echo "already open proxy with ${ip}:${port}"
 }
 
 # uv
