@@ -224,3 +224,7 @@ if (( ${+commands[rg]} )); then
     alias rga='rg --no-ignore'
 fi
 
+# for tabby sftp
+function precmd () {
+    echo -n "\x1b]1337;CurrentDir=$(pwd)\x07"
+}
