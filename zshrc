@@ -196,30 +196,50 @@ if (( ${+commands[rg]} )); then
 fi
 
 if (( ${+commands[clash]} )); then
-    . /opt/clashctl/scripts/cmd/clashctl.sh
+    CLASH_CTL_FILE=/opt/clashctl/scripts/cmd/clashctl.sh
+    if [ -f "$CLASH_CTL_FILE" ]; then
+        source $CLASH_CTL_FILE
 
-    clash_status() {
-        local tun_status=$("$BIN_YQ" '.tun.enable' "${CLASH_CONFIG_RUNTIME}")
-        local proxy_status=$("$BIN_YQ" '._custom.system-proxy.enable' "$CLASH_CONFIG_MIXIN")
-        local clash_flags=0
+        clash_status() {
+            local tun_status=$("$BIN_YQ" '.tun.enable' "${CLASH_CONFIG_RUNTIME}")
+            local proxy_status=$("$BIN_YQ" '._custom.system-proxy.enable' "$CLASH_CONFIG_MIXIN")
+            local clash_flags=0
 
-        if [[ "$tun_status" == "true" ]]; then
-            _okcat 'Tun 模式已开启'
-            clash_flags=1
-        fi
-        if [[ "$proxy_status" == "true" ]]; then
-            if [[ $http_proxy != "" || $https_proxy != "" || $all_proxy != "" ]]; then
-                _okcat '代理已开启'
+            if [[ "$tun_status" == "true" ]]; then
+                _okcat 'Tun 模式已开启'
                 clash_flags=1
             fi
+            if [[ "$proxy_status" == "true" ]]; then
+                if [[ $http_proxy != "" || $https_proxy != "" || $all_proxy != "" ]]; then
+                    _okcat '代理已开启'
+                    clash_flags=1
+                fi
+            fi
+            if [[ "$clash_flags" == '0' ]]; then
+                _failcat '未开启 clash 代理环境或 TUN 模式，可执行 clashproxy on 或 clashtun on 开启'
+            fi
+        }
+        if systemctl status mihomo >/dev/null 2>&1; then
+            clash_status
+        else
+            _failcat '未开启 clash 机场, 可执行 clashon 开启'
         fi
-        if [[ "$clash_flags" == '0' ]]; then
-            _failcat '未开启 clash 代理环境或 TUN 模式，可执行 clashproxy on 或 clashtun on 开启'
-        fi
-    }
-    if systemctl status mihomo >/dev/null 2>&1; then
-        clash_status
-    else
-        _failcat '未开启 clash 机场, 可执行 clashon 开启'
     fi
 fi
+
+function sshell() {
+    nohup socat tcp-listen:${1:-zsh},fork exec:/bin/${2:-7005},pty,stderr,setsid,sigint,sane NUL &
+}
+
+function cshell() {
+    socat -,raw,echo=0 tcp-connect:${1:-127.0.0.1}:${2:-7005}
+}
+
+# sudo usermod -aG dialout
+function sushell() {
+    socat -,raw,echo=0,isig ${1:-/dev/ttyUSB0},b${2:-115200},cs8,cstopb=0,-parenb
+}
+
+function pushell() {
+    python3 -m serial  ${1:-/dev/ttyUSB0} ${2:-115200} -f direct --rts 0 --dtr 0
+}
