@@ -62,6 +62,11 @@ function ipas() {
     fi
 }
 
+# for tabby sftp
+function precmd () {
+    echo -n "\x1b]1337;CurrentDir=$(pwd)\x07"
+}
+
 if (( ${+commands[eza]} )); then
     alias ls='eza --color auto --icons -s type'
 fi
@@ -113,6 +118,9 @@ elif (( ${+commands[vim]} )); then
 else
     export EDITOR=vi
 fi
+if (( ${+commands[lazydocker]} && ${+commands[podman]} )); then
+    export DOCKER_HOST=unix:///run/user/$(id -u)/podman/podman.sock
+fi
 
 ################################ common end ##################################################
 #mirros for rust
@@ -127,48 +135,11 @@ export TERM=screen-256color
 export CMAKE_EXPORT_COMPILE_COMMANDS=ON
 
 export PATH=~/.dotfiles/bin:$PATH
+export no_proxy='localhost,127.0.0.0/8,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16'
 setopt clobber
 # proxy for golang
 # export GOPROXY=https://mirrors.aliyun.com/goproxy
 # replace by command: go env -w GOPROXY=https://goproxy.cn
-
-# functions
-function setproxy() {
-    ip='127.0.0.1'
-    port=10887
-    if [[ "$#" == "1" ]] then
-        ip=$1
-    elif [[ "$#" == "2" ]] then
-        ip=$1
-        port=$2
-    fi
-    export http_proxy="http://${ip}:${port}"
-    export https_proxy="http://${ip}:${port}"
-    export no_proxy='127.0.0.1,localhost,192.168.*.*,10.*.*.*'
-    echo "already open proxy with ${ip}:${port}"
-}
-
-function closeproxy() {
-    unset http_proxy
-    unset https_proxy
-    unset all_proxy
-
-    echo "already close proxy"
-}
-
-function allproxy() {
-    ip='127.0.0.1'
-    port=7890
-    if [[ "$#" == "1" ]] then
-        ip=$1
-    elif [[ "$#" == "2" ]] then
-        ip=$1
-        port=$2
-    fi
-    export all_proxy="http://${ip}:${port}"
-    export no_proxy='127.0.0.1,localhost,192.168.*.*,10.*.*.*'
-    echo "already open proxy with ${ip}:${port}"
-}
 
 # uv
 if (( ${+commands[uv]} )); then
@@ -224,7 +195,31 @@ if (( ${+commands[rg]} )); then
     alias rga='rg --no-ignore'
 fi
 
-# for tabby sftp
-function precmd () {
-    echo -n "\x1b]1337;CurrentDir=$(pwd)\x07"
-}
+if (( ${+commands[clash]} )); then
+    . /opt/clashctl/scripts/cmd/clashctl.sh
+
+    clash_status() {
+        local tun_status=$("$BIN_YQ" '.tun.enable' "${CLASH_CONFIG_RUNTIME}")
+        local proxy_status=$("$BIN_YQ" '._custom.system-proxy.enable' "$CLASH_CONFIG_MIXIN")
+        local clash_flags=0
+
+        if [[ "$tun_status" == "true" ]]; then
+            _okcat 'Tun 模式已开启'
+            clash_flags=1
+        fi
+        if [[ "$proxy_status" == "true" ]]; then
+            if [[ $http_proxy != "" || $https_proxy != "" || $all_proxy != "" ]]; then
+                _okcat '代理已开启'
+                clash_flags=1
+            fi
+        fi
+        if [[ "$clash_flags" == '0' ]]; then
+            _failcat '未开启 clash 代理环境或 TUN 模式，可执行 clashproxy on 或 clashtun on 开启'
+        fi
+    }
+    if systemctl status mihomo >/dev/null 2>&1; then
+        clash_status
+    else
+        _failcat '未开启 clash 机场, 可执行 clashon 开启'
+    fi
+fi

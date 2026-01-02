@@ -10,15 +10,10 @@
 
 [http]
 	sslVerify = false
-	proxy = http://127.0.0.1:7890
-
-[https]
-	proxy = http://127.0.0.1:7890
 
 [user]
 	name = kabirz
 	email = jxwazxzhp@126.com
-	; signingkey = 1472FB5FD5F8D611
 
 [alias]
 	st = status
@@ -58,3 +53,9 @@
 	hunk-header-file-style = red
 	hunk-header-line-number-style = "#067a00"
 	hunk-header-style = file line-number syntax
+[credential "https://github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential
