@@ -42,7 +42,7 @@ alias -s djvu=djview
 alias -s zip="unzip -l"
 alias -s rar="unrar l"
 alias -s tar="tar tf"
-alias -s tar.gz="echo "
+alias -s tar.gz="tar tzf"
 alias -s ace="unace l"
 
 function ipa() {
@@ -125,11 +125,14 @@ fi
 ################################ common end ##################################################
 #mirros for rust
 export RUSTUP_DIST_SERVER=https://rsproxy.cn
-export RUSTUP_UPDATE_ROOT=https://rsporxy.cn/rustup
+export RUSTUP_UPDATE_ROOT=https://rsproxy.cn/rustup
 # curl --proto '=https' --tlsv1.2 -sSf https://rsproxy.cn/rustup-init.sh | sh
 # enable true color
 export COLORTERM=truecolor
-export TERM=screen-256color
+# Set TERM only outside multiplexers (tmux/zellij set TERM internally)
+if [[ -z "$TMUX" && -z "$ZELLIJ" ]]; then
+    export TERM=screen-256color
+fi
 
 # cmake for lsp
 export CMAKE_EXPORT_COMPILE_COMMANDS=ON
@@ -143,12 +146,10 @@ setopt clobber
 
 # uv
 if (( ${+commands[uv]} )); then
-    type -p _uv > /dev/null
-    if (( $? != 0 )); then
+    if ! (( ${+functions[_uv]} )); then
         eval "$(uv generate-shell-completion zsh)"
     fi
-    type -p _uvx > /dev/null
-    if (( $? != 0 )); then
+    if ! (( ${+functions[_uvx]} )); then
         eval "$(uvx --generate-shell-completion zsh)"
     fi
     function setuv() {
@@ -219,7 +220,7 @@ if (( ${+commands[clash]} )); then
                 _failcat '未开启 clash 代理环境或 TUN 模式，可执行 clashproxy on 或 clashtun on 开启'
             fi
         }
-        if systemctl status mihomo >/dev/null 2>&1; then
+        if systemctl is-active --quiet mihomo 2>/dev/null; then
             clash_status
         else
             _failcat '未开启 clash 机场, 可执行 clashon 开启'

@@ -2,3 +2,4 @@
 .clangd
 ids
 zellij/*.wasm
+__pycache__/

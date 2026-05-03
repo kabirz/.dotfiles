@@ -9,6 +9,7 @@
 	ui = auto
 
 [http]
+	# Disabled for internal self-signed certificate environments
 	sslVerify = false
 
 [user]
@@ -38,9 +39,9 @@
 [delta]
 	side-by-side = true
 	features = decorations
-  navigate = true
-  light = false
-  line-numbers = true
+	navigate = true
+	light = false
+	line-numbers = true
 
 [delta "interactive"]
 	keep-plus-minus-markers = false

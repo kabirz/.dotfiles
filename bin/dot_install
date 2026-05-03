@@ -91,9 +91,9 @@ def zim_install(zimfw: str, _cmd: str):
         ZSHRC.write_text(f'source {ZSHRC_ZIM}\n')
 
 
-def clangd_install(name: str, _cmd: str):
-    clangd_cfg = HOME_PATH / name
-    clangd_cfg.write_text('''CompileFlags:
+def clangd_install(dst_path: Path, _src: str):
+    dst_path.parent.mkdir(parents=True, exist_ok=True)
+    dst_path.write_text('''CompileFlags:
   Remove:
     - -mabi=lp64
     - -fno-printf-return-value
@@ -120,7 +120,7 @@ def main():
         'zellij': (zellij_install, (CFG_PATH / 'zellij', 'zellij')),
         'tmux': (tmux_install, (HOME_PATH / '.tmux.conf', '.tmux.conf')),
         'zim': (zim_install, ('zsh', '')),
-        'clangd': (clangd_install, ('.clangd', '')),
+        'clangd': (clangd_install, (HOME_PATH / '.clangd', '')),
         'all': (),
     }
     parser = argparse.ArgumentParser(description='tool for install dotfile')
