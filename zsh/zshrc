@@ -123,6 +123,8 @@ bindkey -M vicmd 'j' history-substring-search-down
 # start enable completion
 source ${${(%):-%x}:A:h:h}/zshrc
 # }}} End configuration added by Zim install
+# claude code
+source ${${(%):-%x}:A:h}/cc.zsh
 # local config
 [ ! -e ~/.myrc ] || source ~/.myrc
 

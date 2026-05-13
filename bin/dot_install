@@ -40,7 +40,9 @@ def create_link(dst_path: Path, src: str|Path):
 
 def zellij_install(dst_path: Path, src: str):
     create_link(dst_path, src)
-    zjstatus_file = CUR_PATH / src / 'zjstatus.wasm'
+    PLUGINS_DIR = CUR_PATH / src / 'plugins'
+    PLUGINS_DIR.mkdir(parents=True, exist_ok=True)
+    zjstatus_file =  PLUGINS_DIR / 'zjstatus.wasm'
     if not zjstatus_file.exists():
         url = 'https://github.com/dj95/zjstatus/releases/latest/download/zjstatus.wasm'
         download_file(url, zjstatus_file.as_posix())
