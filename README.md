@@ -7,7 +7,8 @@
 ```
 .dotfiles/
 ├── bin/                    # 工具脚本
-│   └── dot_install         # 主安装脚本 (Python)
+│   ├── dot_install         # 主安装脚本 (Python)
+│   └── setup-transparent-proxy  # 透明代理配置 (redsocks + iptables)
 ├── nvim_user/              # Neovim 配置 (git submodule)
 ├── template/               # Neovim 模板项目配置
 ├── zsh/                    # Zsh 配置 (zim 集成)
@@ -133,14 +134,23 @@ cd .dotfiles
 - GitHub CLI 凭证集成
 - diff3 冲突风格
 
+### 透明代理
+- `setup-transparent-proxy` — 一键配置 Linux 透明代理 (redsocks + iptables)
+- 支持 Ubuntu/Debian、CentOS/RHEL、Fedora、Arch Linux
+- 自动安装 redsocks、解析代理 IP、配置 iptables NAT 规则
+- 生成 `proxy-off.sh` 一键关闭代理
+- 用法: `sudo setup-transparent-proxy <代理主机> <代理端口> [本地端口]`
+
 ### 网络与串口工具
 - `sshell` / `cshell` - socat TCP 远程 shell
 - `sushell` - 串口终端 (USB-UART)
 - `pushell` - Python 串口工具
 
 ### Claude Code 包装
+- `claude` / `cc` — 默认通过本地代理 `localhost:3000` 连接
 - `cc-deepseek` - DeepSeek API 模式
-- `cc-glm-5.1` / `cc-glm` - 智谱 GLM API 模式
+- `cc-glm-5.1` - 智谱 GLM-5.1 API 模式 (指定模型)
+- `cc-glm` - 智谱 GLM API 模式 (默认模型)
 
 ## License
 
