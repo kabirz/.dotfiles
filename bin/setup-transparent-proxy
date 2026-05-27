@@ -1,0 +1,365 @@
+#!/bin/bash
+set -e
+
+# ============================================================
+# 透明代理配置脚本
+# 支持: Ubuntu/Debian, CentOS/RHEL/Fedora, Arch Linux
+#
+# 用法:
+#   sudo bash setup-transparent-proxy.sh <代理主机> <代理端口>
+#
+# 示例:
+#   sudo bash setup-transparent-proxy.sh 127.0.0.1 7890
+#   sudo bash setup-transparent-proxy.sh 10.0.0.1 8080
+#   sudo bash setup-transparent-proxy.sh proxy.example.com 3128
+# ============================================================
+
+# 颜色
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+NC='\033[0m'
+
+info()  { echo -e "${GREEN}[INFO]${NC} $1"; }
+warn()  { echo -e "${YELLOW}[WARN]${NC} $1"; }
+error() { echo -e "${RED}[ERROR]${NC} $1"; }
+
+# ----------------------------------------------------------
+# 参数解析
+# ----------------------------------------------------------
+usage() {
+    echo "用法: sudo bash $0 <代理主机> <代理端口> [本地监听端口]"
+    echo ""
+    echo "参数:"
+    echo "  代理主机        上游代理的主机名或 IP（必填）"
+    echo "  代理端口        上游代理的端口号（必填）"
+    echo "  本地监听端口    redsocks 本地监听端口，默认 12345（可选）"
+    echo ""
+    echo "示例:"
+    echo "  sudo bash $0 127.0.0.1 7890"
+    echo "  sudo bash $0 10.0.0.1 8080"
+    echo "  sudo bash $0 proxy.example.com 3128 1080"
+    exit 1
+}
+
+if [ $# -lt 2 ]; then
+    error "缺少必要参数"
+    echo ""
+    usage
+fi
+
+PROXY_HOST="$1"
+PROXY_PORT="$2"
+REDSOCKS_PORT="${3:-12345}"
+
+# 校验端口号
+if ! [[ "$PROXY_PORT" =~ ^[0-9]+$ ]] || [ "$PROXY_PORT" -lt 1 ] || [ "$PROXY_PORT" -gt 65535 ]; then
+    error "代理端口无效: $PROXY_PORT（应为 1-65535）"
+    exit 1
+fi
+
+if ! [[ "$REDSOCKS_PORT" =~ ^[0-9]+$ ]] || [ "$REDSOCKS_PORT" -lt 1 ] || [ "$REDSOCKS_PORT" -gt 65535 ]; then
+    error "本地监听端口无效: $REDSOCKS_PORT（应为 1-65535）"
+    exit 1
+fi
+
+if [ "$PROXY_PORT" -eq "$REDSOCKS_PORT" ]; then
+    error "代理端口和本地监听端口不能相同"
+    exit 1
+fi
+
+info "配置参数: 代理=$PROXY_HOST:$PROXY_PORT  本地=127.0.0.1:$REDSOCKS_PORT"
+
+# ----------------------------------------------------------
+# 0. 检测发行版和包管理器
+# ----------------------------------------------------------
+detect_distro() {
+    if [ -f /etc/os-release ]; then
+        . /etc/os-release
+        DISTRO_ID="$ID"
+        DISTRO_LIKE="${ID_LIKE:-$ID}"
+    elif command -v lsb_release &>/dev/null; then
+        DISTRO_ID=$(lsb_release -si | tr '[:upper:]' '[:lower:]')
+        DISTRO_LIKE="$DISTRO_ID"
+    else
+        error "无法检测发行版"
+        exit 1
+    fi
+
+    case "$DISTRO_ID" in
+        ubuntu|debian|linuxmint|pop)
+            PKG_MGR="apt"
+            DISTRO_FAMILY="debian"
+            ;;
+        centos|rhel|rocky|alma|ol)
+            PKG_MGR="yum"
+            DISTRO_FAMILY="rhel"
+            ;;
+        fedora)
+            PKG_MGR="dnf"
+            DISTRO_FAMILY="rhel"
+            ;;
+        arch|manjaro|endeavouros)
+            PKG_MGR="pacman"
+            DISTRO_FAMILY="arch"
+            ;;
+        *)
+            case "$DISTRO_LIKE" in
+                *debian*|*ubuntu*)
+                    PKG_MGR="apt"
+                    DISTRO_FAMILY="debian"
+                    ;;
+                *rhel*|*centos*|*fedora*)
+                    if command -v dnf &>/dev/null; then
+                        PKG_MGR="dnf"
+                    else
+                        PKG_MGR="yum"
+                    fi
+                    DISTRO_FAMILY="rhel"
+                    ;;
+                *arch*)
+                    PKG_MGR="pacman"
+                    DISTRO_FAMILY="arch"
+                    ;;
+                *)
+                    error "不支持的发行版: $DISTRO_ID (ID_LIKE=$DISTRO_LIKE)"
+                    exit 1
+                    ;;
+            esac
+            ;;
+    esac
+
+    info "检测到发行版: $DISTRO_ID (系列: $DISTRO_FAMILY, 包管理器: $PKG_MGR)"
+}
+
+# ----------------------------------------------------------
+# 1. 安装 redsocks
+# ----------------------------------------------------------
+install_redsocks() {
+    if command -v redsocks &>/dev/null; then
+        info "redsocks 已安装"
+        return
+    fi
+
+    info "安装 redsocks..."
+    case "$PKG_MGR" in
+        apt)
+            sudo apt update
+            sudo apt install -y redsocks
+            ;;
+        yum)
+            if ! rpm -q epel-release &>/dev/null; then
+                info "安装 EPEL 源..."
+                sudo yum install -y epel-release
+            fi
+            sudo yum install -y redsocks
+            ;;
+        dnf)
+            if ! rpm -q epel-release &>/dev/null; then
+                info "安装 EPEL 源..."
+                sudo dnf install -y epel-release
+            fi
+            sudo dnf install -y redsocks
+            ;;
+        pacman)
+            if command -v yay &>/dev/null; then
+                yay -S --noconfirm redsocks-git
+            elif command -v paru &>/dev/null; then
+                paru -S --noconfirm redsocks-git
+            else
+                warn "AUR 助手 (yay/paru) 未找到，从源码编译 redsocks..."
+                install_redsocks_from_source
+            fi
+            ;;
+    esac
+
+    if ! command -v redsocks &>/dev/null; then
+        error "redsocks 安装失败"
+        exit 1
+    fi
+}
+
+install_redsocks_from_source() {
+    local BUILD_DIR="/tmp/redsocks-build"
+    sudo pacman -S --noconfirm --needed base-devel git
+
+    rm -rf "$BUILD_DIR"
+    git clone https://github.com/semicontinuous/redsocks.git "$BUILD_DIR"
+    cd "$BUILD_DIR"
+    make
+    sudo install -m 755 redsocks /usr/local/bin/redsocks
+
+    if [ ! -f /usr/lib/systemd/system/redsocks.service ]; then
+        sudo tee /usr/lib/systemd/system/redsocks.service > /dev/null << 'SVCEOF'
+[Unit]
+Description=Redsocks transparent TCP-to-proxy redirector
+After=network.target
+
+[Service]
+Type=forking
+ExecStart=/usr/local/bin/redsocks -c /etc/redsocks.conf
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+SVCEOF
+        sudo systemctl daemon-reload
+    fi
+
+    cd /tmp
+    rm -rf "$BUILD_DIR"
+    info "redsocks 从源码编译安装完成"
+}
+
+# ----------------------------------------------------------
+# 2. 解析代理服务器 IP
+# ----------------------------------------------------------
+resolve_proxy_ip() {
+    PROXY_IP=$(getent hosts "$PROXY_HOST" 2>/dev/null | awk '{print $1}' | head -1)
+
+    if [ -z "$PROXY_IP" ]; then
+        if command -v dig &>/dev/null; then
+            PROXY_IP=$(dig +short "$PROXY_HOST" A 2>/dev/null | head -1)
+        elif command -v nslookup &>/dev/null; then
+            PROXY_IP=$(nslookup "$PROXY_HOST" 2>/dev/null | awk '/^Address:/{print $2}' | head -1)
+        elif command -v host &>/dev/null; then
+            PROXY_IP=$(host "$PROXY_HOST" 2>/dev/null | awk '/has address/{print $NF}' | head -1)
+        fi
+    fi
+
+    if [ -z "$PROXY_IP" ]; then
+        error "无法解析 $PROXY_HOST，请检查 DNS 配置"
+        exit 1
+    fi
+
+    info "代理服务器: $PROXY_HOST -> $PROXY_IP"
+}
+
+# ----------------------------------------------------------
+# 3. 写入 redsocks 配置
+# ----------------------------------------------------------
+write_config() {
+    info "写入 /etc/redsocks.conf..."
+    sudo tee /etc/redsocks.conf > /dev/null << EOF
+base {
+    log_debug = off;
+    log_info = on;
+    daemon = on;
+    redirector = iptables;
+}
+
+redsocks {
+    local_ip = 127.0.0.1;
+    local_port = $REDSOCKS_PORT;
+    ip = $PROXY_IP;
+    port = $PROXY_PORT;
+    type = http-connect;
+}
+EOF
+}
+
+# ----------------------------------------------------------
+# 4. 启动 redsocks
+# ----------------------------------------------------------
+start_redsocks() {
+    info "启动 redsocks..."
+    sudo systemctl stop redsocks 2>/dev/null || true
+    sudo systemctl start redsocks
+
+    sleep 1
+    if sudo systemctl is-active --quiet redsocks; then
+        info "redsocks 已启动"
+        sudo systemctl enable redsocks
+    else
+        error "redsocks 启动失败，查看日志:"
+        echo "  sudo journalctl -u redsocks -n 20 --no-pager"
+        exit 1
+    fi
+}
+
+# ----------------------------------------------------------
+# 5. 配置 iptables 规则
+# ----------------------------------------------------------
+setup_iptables() {
+    info "配置 iptables 规则..."
+
+    if ! command -v iptables &>/dev/null; then
+        info "安装 iptables..."
+        case "$PKG_MGR" in
+            apt)    sudo apt install -y iptables ;;
+            yum)    sudo yum install -y iptables ;;
+            dnf)    sudo dnf install -y iptables ;;
+            pacman) sudo pacman -S --noconfirm --needed iptables ;;
+        esac
+    fi
+
+    # 清理旧规则（幂等）
+    sudo iptables -t nat -D OUTPUT -p tcp -j REDSOCKS 2>/dev/null || true
+    sudo iptables -t nat -F REDSOCKS 2>/dev/null || true
+    sudo iptables -t nat -X REDSOCKS 2>/dev/null || true
+
+    sudo iptables -t nat -N REDSOCKS
+
+    # 排除本地/内网/代理服务器自身流量
+    sudo iptables -t nat -A REDSOCKS -d 127.0.0.0/8    -j RETURN
+    sudo iptables -t nat -A REDSOCKS -d 10.0.0.0/8      -j RETURN
+    sudo iptables -t nat -A REDSOCKS -d 172.16.0.0/12    -j RETURN
+    sudo iptables -t nat -A REDSOCKS -d 192.168.0.0/16   -j RETURN
+    sudo iptables -t nat -A REDSOCKS -d ${PROXY_IP}/32   -j RETURN
+
+    # 排除 redsocks 自身流量
+    sudo iptables -t nat -A REDSOCKS -p tcp -m owner --uid-owner redsocks -j RETURN 2>/dev/null || true
+
+    # 重定向所有 TCP 到 redsocks
+    sudo iptables -t nat -A REDSOCKS -p tcp -j REDIRECT --to-ports $REDSOCKS_PORT
+
+    # 挂载到 OUTPUT 链
+    sudo iptables -t nat -A OUTPUT -p tcp -j REDSOCKS
+
+    info "iptables 规则已生效"
+}
+
+# ----------------------------------------------------------
+# 6. 生成关闭脚本
+# ----------------------------------------------------------
+write_off_script() {
+    sudo tee /usr/local/bin/proxy-off.sh > /dev/null << 'OFFEOF'
+#!/bin/bash
+iptables -t nat -D OUTPUT -p tcp -j REDSOCKS 2>/dev/null || true
+iptables -t nat -F REDSOCKS 2>/dev/null || true
+iptables -t nat -X REDSOCKS 2>/dev/null || true
+systemctl stop redsocks 2>/dev/null || true
+echo "[INFO] 透明代理已关闭"
+OFFEOF
+    sudo chmod +x /usr/local/bin/proxy-off.sh
+}
+
+# ----------------------------------------------------------
+# 主流程
+# ----------------------------------------------------------
+detect_distro
+install_redsocks
+resolve_proxy_ip
+write_config
+start_redsocks
+setup_iptables
+write_off_script
+
+# ----------------------------------------------------------
+# 完成提示
+# ----------------------------------------------------------
+echo ""
+info "透明代理已配置完成"
+echo "  上游代理: $PROXY_HOST ($PROXY_IP):$PROXY_PORT"
+echo "  本地监听: 127.0.0.1:$REDSOCKS_PORT"
+echo ""
+echo "验证方式:"
+echo "  curl http://httpbin.org/ip"
+echo "  curl -v https://www.google.com 2>&1 | head -20"
+echo ""
+echo "查看 redsocks 日志:"
+echo "  sudo journalctl -u redsocks -f"
+echo ""
+echo "关闭透明代理:"
+echo "  sudo proxy-off.sh"
