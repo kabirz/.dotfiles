@@ -6,12 +6,8 @@ export DISABLE_TELEMETRY=1
 export MCP_TIMEOUT=60000
 
 claude() {
-    ANTHROPIC_BASE_URL=https://open.bigmodel.cn/api/anthropic \
-    ANTHROPIC_AUTH_TOKEN="$GLM_AUTH_TOKEN" \
-    ANTHROPIC_MODEL=glm-5.1 \
-    ANTHROPIC_DEFAULT_HAIKU_MODEL=glm-4.5-Air \
-    ANTHROPIC_DEFAULT_OPUS_MODEL=glm-5.1 \
-    ANTHROPIC_DEFAULT_SONNET_MODEL=glm-5-turbo \
+    ANTHROPIC_BASE_URL=http://localhost:3000 \
+    ANTHROPIC_AUTH_TOKEN="12345678" \
     command claude "$@"
 }
 
