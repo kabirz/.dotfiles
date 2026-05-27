@@ -216,6 +216,13 @@ SVCEOF
 # 2. 解析代理服务器 IP
 # ----------------------------------------------------------
 resolve_proxy_ip() {
+    # 如果已经是 IP 地址，直接使用，跳过 DNS 解析
+    if [[ "$PROXY_HOST" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+        PROXY_IP="$PROXY_HOST"
+        info "代理服务器: $PROXY_HOST (直接使用 IP)"
+        return
+    fi
+
     PROXY_IP=$(getent hosts "$PROXY_HOST" 2>/dev/null | awk '{print $1}' | head -1)
 
     if [ -z "$PROXY_IP" ]; then
