@@ -125,6 +125,8 @@ source ${${(%):-%x}:A:h:h}/zshrc
 # }}} End configuration added by Zim install
 # claude code
 source ${${(%):-%x}:A:h}/cc.zsh
+# proxy
+source ${${(%):-%x}:A:h}/proxy.zsh
 # local config
 [ ! -e ~/.myrc ] || source ~/.myrc
 
